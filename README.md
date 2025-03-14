@@ -25,5 +25,5 @@ The IR receiver will capture the signal from the remote control and send it to t
 **Sensing Devices:** IR receiver for input username and coordinates, SW3 button for start the game and send result. <br />
 ## Project Video Demo
 Here is the link for the demo video <br />
-[https://drive.google.com/file/d/1PDvoV8rTZNFeHTsMCljDYeIdwGIUFCpB/view?usp=sharing]
+https://drive.google.com/file/d/1PDvoV8rTZNFeHTsMCljDYeIdwGIUFCpB/view?usp=sharing
 
