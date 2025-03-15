@@ -3,6 +3,20 @@
 ## Description
 Our prototype will be a replica of the game battleship. This game will use two OLEDs, an IR receiver to input commands as well as save the name of the player, buttons on the microcontroller to navigate the interface, and AWS to store the scores and names of players.
 Each player will take turns entering coordinates using the TV remote, and they will either receive a hit or miss. Players will take turns shooting at each ship until one side has sunk all the opposing ships, resulting in a winner.
+## Implementation
+![Image](https://github.com/user-attachments/assets/a16c0152-69e7-44d2-9a4c-8898be21b665) <br />
+To start off, we needed to program the remote so that it is possible to decode the signal from the remote and obtain what letter was inputted. The circuitry we used is shown above for the IR sensor. The way we were able to get the signal was by using an interrupt handler that would check how long the time was between each falling edge. This would allow us to interpret the entire signal the TV remote sends to the input pin. Then, using that signal we would be able to decode which letter was pressed on the remote. To cycle through the letters, we implemented a way for the letter to be changed when the “1” button is clicked on the remote.  
+
+The next part is implementing the switches. This part is relatively simple, we just had a couple lines of codes that would poll for when the switch is pressed. If it was pressed, then the game would start. Another functionality we coded in was for the scores to be sent to AWS using the switch.
+
+The OLED was connected to the CC3200 using SPI and the wiring was done according to the pins we sent in the pin_mux_config.c file. To start up the OLED, we used the normal initialization commands along with the other files that we created in lab 2. 
+
+The next part is making sure the AWS is able to send emails correctly. To do this, we took code from lab 4 and used it in order to format the information that we wanted to send. Along with this, we programmed a button that we would use to send the information across UART. This was done because the games ended at different times on each screen. So, the buttons ensured that the sending and receiving over UART was done at the same time.
+
+The last part of the implementation was drawing the game on the OLED and figuring out all of the game logic. I first started out by drawing two 7x7 boards, one on the top left and one on the bottom right. I wrote in prompts for the user in the bottom left corner. Then according to the prompts the users would type in the necessary information to input their username and ship location. Furthermore, if the user were to enter something wrong, there is error checking that would tell them the error and ask them to try again. Next, inside of the enter key, I would draw the ship into the top left board. This board will be where the user’s ships reside. I created 3 ships, using 3 different while loops. All the ships had different lengths, one of 2, 3 and 4 length.
+
+The next part was creating another while loop where I could poll the signal from the IR remote. This is for the attacking portion. Here, I would also poll for specific UART inputs from the other device like HIT, MISS, or a coordinate to attack. The way the code works is that the first coordinate entered will be sent over UART to the other device. The device will decide whether it was a HIT or a MISS, and then send HIT or MISS back through UART. Then, the original device will note that it was a HIT or a MISS and mark the original square as red or green. This was a continuous poll, and I kept track of the ships using an array. When ships were hit, I would delete them off the array, and when the array was empty, the game would end.
+
 ## State Diagram
 ![Image](https://github.com/user-attachments/assets/622042eb-228b-4c15-b635-95226725edf4)
 **S1:** Idling, initialize the peripherals. Set up OLED and CC3200. Start page of the game, press *SW3* to start the game. <br />
